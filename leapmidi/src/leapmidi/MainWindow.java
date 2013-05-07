@@ -125,6 +125,7 @@ public class MainWindow extends Listener
     public void onConnect(Controller controller)
     {
         System.out.println("Controller Connnected");
+        controller.setPolicyFlags(Controller.PolicyFlag.POLICY_BACKGROUND_FRAMES);
     }
 
     @Override
