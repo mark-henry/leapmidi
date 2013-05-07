@@ -23,12 +23,10 @@ public class MainWindow extends Listener
     private JComboBox comboBox1;
     private MidiDevice midiOutDevice = null;
     private Profile profile = new Profile();
-    private static LeapMidiListener listener;
-    private static Controller controller;
+    private Controller controller;
 
     public MainWindow()
     {
-        listener = new LeapMidiListener();
         controller = new Controller();
 
         // For testing purposes
@@ -37,11 +35,15 @@ public class MainWindow extends Listener
             @Override
             public int getValue(Frame frame)
             {
+                final int min = 100;
+                final int max = 400;
                 // Get y-coordinate of first available finger
                 if (frame.fingers().isEmpty())
                     return -1;
-                else
-                    return (int)frame.finger(0).tipPosition().getY();
+                else {
+                    int pos = (int)frame.fingers().leftmost().tipPosition().getY();
+                    return 127 * (pos - min) / (max - min);
+                }
             }
         });
 
@@ -49,6 +51,29 @@ public class MainWindow extends Listener
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         final DefaultComboBoxModel model = new DefaultComboBoxModel(infos);
         comboBox1.setModel(model);
+
+        slider1.addChangeListener(new ChangeListener()
+        {
+            @Override
+            public void stateChanged(ChangeEvent e)
+            {
+                JSlider source = (JSlider) e.getSource();
+                // Send MIDI CC
+                if (midiOutDevice != null && midiOutDevice.isOpen())
+                {
+                    try
+                    {
+                        midiOutDevice.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE,
+                                1, 1, slider1.getValue()), -1);
+                    }
+                    catch (Exception e1)
+                    {
+                        JOptionPane.showMessageDialog(panel1, "Couldn't send message: " + e1.getLocalizedMessage(),
+                                "MIDI Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
 
         comboBox1.addActionListener(new ActionListener()
         {
@@ -60,7 +85,7 @@ public class MainWindow extends Listener
                 try
                 {
                     // Get the MIDI device
-                    midiOutDevice = MidiSystem.getMidiDevice((MidiDevice.Info)comboBox1.getSelectedItem());
+                    midiOutDevice = MidiSystem.getMidiDevice((MidiDevice.Info) comboBox1.getSelectedItem());
                     try
                     {
                         // Open the MIDI device
@@ -86,8 +111,6 @@ public class MainWindow extends Listener
     public void onFrame(Controller controller)
     {
         Frame frame = controller.frame();
-
-        System.out.println("Frame gotten");
 
         slider1.setValue(profile.getParameters().get(0).getTransform().getValue(frame));
     }
@@ -118,12 +141,13 @@ public class MainWindow extends Listener
 
     public static void main(String[] args)
     {
+        MainWindow window = new MainWindow();
         JFrame frame = new JFrame("MainWindow");
-        frame.setContentPane(new MainWindow().panel1);
+        frame.setContentPane(window.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
 
-        controller.addListener(listener);
+        window.controller.addListener(window);
     }
 }
