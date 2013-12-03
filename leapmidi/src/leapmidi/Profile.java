@@ -5,37 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A Profile contains many Parameters.
+ * A Profile aggregates Controls.
  */
 public class Profile implements Serializable
 {
-    private List<Parameter> parameters = new ArrayList<Parameter>();
+    private List<Control> controls = new ArrayList<Control>();
 
     /**
-     * Adds a paramter to this Profile with the given Transform
-     * @param transform the Transform that the new Parameter represents
+     * Adds the given Control to this Profile
      */
-    public void add(Transform transform)
+    public void add(Control control)
     {
-        // Find first available CC channel and number.
-        int firstAvailCCChannel = 1;
-        int firstAvailCCNumber = 1;
-        while (!areCCNumbersFree(firstAvailCCChannel, firstAvailCCNumber))
-        {
-            firstAvailCCNumber++;
-            if (firstAvailCCNumber >= 127)
-            {
-                firstAvailCCNumber = 0;
-                firstAvailCCChannel++;
-            }
-        }
-
-        parameters.add(new Parameter(firstAvailCCChannel, firstAvailCCNumber, transform));
+        controls.add(control);
     }
 
     private boolean areCCNumbersFree(int CCChannel, int CCNumber)
     {
-        for (Parameter p : parameters)
+        for (Control p : controls)
         {
             if (p.CCNumber == CCNumber && p.CCChannel == CCChannel)
                 return false;
@@ -44,9 +30,9 @@ public class Profile implements Serializable
         return true;
     }
 
-    public List<Parameter> getParameters()
+    public List<Control> getControls()
     {
-        return parameters;
+        return controls;
     }
 
     public Profile()
