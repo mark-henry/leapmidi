@@ -57,6 +57,23 @@ public class DefaultControls
             }
         }));
 
+       result.add(new Control(1, 2, "Hand Z Axis", new Transform()
+       {
+          @Override
+          public int getValue(Frame frame)
+          {
+             int min = -400;
+             int max = 400;
+             // Get z-coordinate of first finger we see
+             if (frame.fingers().isEmpty())
+                return -1;
+             else {
+                int pos = (int)frame.fingers().leftmost().tipPosition().getZ();
+                return 127 * (pos - min) / (max - min);
+             }
+          }
+       }));
+
         return result;
     }
 }

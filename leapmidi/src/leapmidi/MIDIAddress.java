@@ -7,4 +7,10 @@ public class MIDIAddress
 {
     public int channel;
     public int number;
+
+    public MIDIAddress(int channel, int number)
+    {
+        this.channel = channel;
+        this.number = number;
+    }
 }

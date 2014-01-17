@@ -37,11 +37,11 @@ public class MIDIInterface
         }
         catch (InvalidMidiDataException e)
         {
-            System.err.print("MIDI interface error: Invalid MIDI data: " + e.getLocalizedMessage());
+            System.err.println("MIDI interface error: Invalid MIDI data: " + e.getLocalizedMessage());
         }
         catch (MidiUnavailableException e)
         {
-            System.err.print("MIDI interface error: MIDI Unavailable: " + e.getLocalizedMessage());
+            System.err.println("MIDI interface error: MIDI Unavailable: " + e.getLocalizedMessage());
         }
     }
 }

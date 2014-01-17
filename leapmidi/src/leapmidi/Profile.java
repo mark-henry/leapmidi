@@ -9,33 +9,35 @@ import java.util.List;
  */
 public class Profile implements Serializable
 {
-    private List<Control> controls = new ArrayList<Control>();
+   private List<Control> controls = new ArrayList<Control>();
 
-    /**
-     * Adds the given Control to this Profile
-     */
-    public void add(Control control)
-    {
-        controls.add(control);
-    }
+   public Profile(List<Control> controls)
+   {
+      this.controls = controls;
+   }
 
-    private boolean areCCNumbersFree(int CCChannel, int CCNumber)
-    {
-        for (Control p : controls)
-        {
-            if (p.CCNumber == CCNumber && p.CCChannel == CCChannel)
-                return false;
-        }
+   /**
+    * Adds the given Control to this Profile
+    */
+   public void add(Control control)
+   {
+      controls.add(control);
+   }
 
-        return true;
-    }
+   private boolean areCCNumbersFree(int CCChannel, int CCNumber)
+   {
+      for (Control c : controls)
+      {
+         MIDIAddress addr = c.getMIDIAdress();
+         if (addr.number == CCNumber && addr.channel == CCChannel)
+            return false;
+      }
 
-    public List<Control> getControls()
-    {
-        return controls;
-    }
+      return true;
+   }
 
-    public Profile()
-    {
-    }
+   public List<Control> getControls()
+   {
+      return controls;
+   }
 }

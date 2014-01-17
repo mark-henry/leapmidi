@@ -3,65 +3,79 @@ package leapmidi;
 import com.leapmotion.leap.Frame;
 
 import java.io.Serializable;
+import java.util.Observable;
 
 /**
  * A Control is a CC channel and a Transform.
  */
-public class Control implements Serializable
+public class Control extends Observable
 {
-    protected Transform transform;
-    protected int CCChannel;
-    protected int CCNumber;
-    protected String name;
+   private Transform transform;
+   private MIDIAddress address;
+   private String name;
+   private int value;
 
-    public Control(int CCChannel, int CCNumber, String name, Transform transform)
-    {
-        this.transform = transform;
-        this.CCChannel = CCChannel;
-        this.CCNumber = CCNumber;
-        this.name = name;
-    }
+   public Control(MIDIAddress address, Transform transform)
+   {
+      this.transform = transform;
+      this.address = address;
+   }
 
-    public Control(int CCChannel, int CCNumber, Transform transform)
-    {
-        this.transform = transform;
-        this.CCChannel = CCChannel;
-        this.CCNumber = CCNumber;
-    }
+   public Control(int CCChannel, int CCNumber, String name, Transform transform)
+   {
+      this.transform = transform;
+      this.address = new MIDIAddress(CCChannel, CCNumber);
+      this.name = name;
+   }
 
-    public int getCCChannel()
-    {
-        return CCChannel;
-    }
+   public Control(int CCChannel, int CCNumber, Transform transform)
+   {
+      this.transform = transform;
+      this.address = new MIDIAddress(CCChannel, CCNumber);
+   }
 
-    public void setCCChannel(int CCChannel)
-    {
-        this.CCChannel = CCChannel;
-    }
+   public void setValue(int newValue)
+   {
+      if (this.value != newValue) {
+         value = newValue;
+         setChanged();
+         notifyObservers();
+      }
+   }
 
-    public int getCCNumber()
-    {
-        return CCNumber;
-    }
+   public String getName()
+   {
+      return name;
+   }
 
-    public void setCCNumber(int CCNumber)
-    {
-        this.CCNumber = CCNumber;
-    }
+   public void setName(String name)
+   {
+      if (!name.equals(this.name)) {
+         this.name = name;
+         setChanged();
+         notifyObservers();
+      }
+   }
 
-    public Transform getTransform()
-    {
-        return this.transform;
-    }
+   public void setAddress(MIDIAddress address)
+   {
+      this.address = address;
+   }
 
-    public String getName()
-    {
-        return name;
-    }
+   public MIDIAddress getMIDIAdress()
+   {
+      return this.address;
+   }
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+   public void acceptFrame(Frame frame)
+   {
+      int newValue = transform.getValue(frame);
+      this.setValue(newValue);
+   }
 
+   public int getValue()
+   {
+      clearChanged();
+      return value;
+   }
 }
