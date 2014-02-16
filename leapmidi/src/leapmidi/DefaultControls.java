@@ -1,6 +1,7 @@
 package leapmidi;
 
 import com.leapmotion.leap.Frame;
+import oracle.jrockit.jfr.Options;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,70 +11,54 @@ import java.util.List;
  */
 public class DefaultControls
 {
-    private static List<Control> defaultControls = null;
+   private static List<Control> defaultControls = null;
 
-    public static List<Control> getDefaultControls()
-    {
-        if (DefaultControls.defaultControls == null)
-            DefaultControls.defaultControls = constructDefaultControlsList();
-        return DefaultControls.defaultControls;
-    }
+   public static List<Control> getDefaultControls()
+   {
+      if (DefaultControls.defaultControls == null)
+         DefaultControls.defaultControls = constructDefaultControlsList();
+      return DefaultControls.defaultControls;
+   }
 
-    private static ArrayList<Control> constructDefaultControlsList()
-    {
-        ArrayList<Control> result = new ArrayList<Control>();
+   private static ArrayList<Control> constructDefaultControlsList()
+   {
+      ArrayList<Control> result = new ArrayList<Control>();
 
-        result.add(new Control(1, 1, "Hand Y Axis", new Transform()
-        {
-            @Override
-            public int getValue(Frame frame)
-            {
-                int min = 100;
-                int max = 400;
-                // Get y-coordinate of first finger we see
-                if (frame.fingers().isEmpty())
-                    return -1;
-                else {
-                    int pos = (int)frame.fingers().leftmost().tipPosition().getY();
-                    return 127 * (pos - min) / (max - min);
-                }
+      Transform handYAxisTransform = new Transform()
+      {
+         public Option<Integer> min = new Option<Integer>(100);
+         public Option<Integer> max = new Option<Integer>(400);
+
+         @Override
+         public int getValue(Frame frame)
+         {
+            int min = this.min.getValue();
+            int max = this.max.getValue();
+            // Get y-coordinate of first finger we see
+            if (frame.fingers().isEmpty())
+               return -1;
+            else {
+               int pos = (int)frame.fingers().leftmost().tipPosition().getY();
+               return 127 * (pos - min) / (max - min);
             }
-        }));
+         }
 
-        result.add(new Control(1, 2, "Hand X Axis", new Transform()
-        {
-            @Override
-            public int getValue(Frame frame)
-            {
-                int min = -400;
-                int max = 400;
-                // Get y-coordinate of first finger we see
-                if (frame.fingers().isEmpty())
-                    return -1;
-                else {
-                    int pos = (int)frame.fingers().leftmost().tipPosition().getX();
-                    return 127 * (pos - min) / (max - min);
-                }
-            }
-        }));
+         /**
+          * Implementers are to override this with the Transform's user-adjustable parameters.
+          *
+          * @return a list of Options for the user to adjust
+          */
+         @Override
+         public List<Option> getOptions()
+         {
+            List<Option> options = new ArrayList<Option>();
+            options.add(min);
+            options.add(max);
+            return options;
+         }
+      };
+      result.add(new Control(new MIDIAddress(1, 1), "Hand Y Axis", handYAxisTransform));
 
-       result.add(new Control(1, 2, "Hand Z Axis", new Transform()
-       {
-          @Override
-          public int getValue(Frame frame)
-          {
-             int min = -400;
-             int max = 400;
-             // Get z-coordinate of first finger we see
-             if (frame.fingers().isEmpty())
-                return -1;
-             else {
-                int pos = (int)frame.fingers().leftmost().tipPosition().getZ();
-                return 127 * (pos - min) / (max - min);
-             }
-          }
-       }));
-
-        return result;
-    }
+      return result;
+   }
 }

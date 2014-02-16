@@ -4,30 +4,31 @@ import com.leapmotion.leap.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.sound.midi.*;
 import com.leapmotion.leap.Frame;
+import sun.awt.HorizBagLayout;
 
 /**
  * MainWindow
  */
 public class MainWindow extends Listener implements Observer
 {
-   private Controller controller;
    private JPanel panel1;
    private JComboBox comboBox1;
    private JPanel controlPanel;
+   private JPanel optionPanel;
    private Profile profile;
    private MIDIInterface midiInterface = new MIDIInterface();
 
    public MainWindow()
    {
-      controller = new Controller();
+      Controller controller = new Controller();
       controller.addListener(this);
+
       initMainWindow();
    }
 
@@ -55,7 +56,7 @@ public class MainWindow extends Listener implements Observer
             }
             catch (MidiUnavailableException e1)
             {
-               JOptionPane.showMessageDialog(panel1, e1.getMessage(), "MIDI Unavailable", JOptionPane.OK_OPTION);
+               JOptionPane.showMessageDialog(panel1, e1.getMessage(), "MIDI Unavailable", JOptionPane.ERROR_MESSAGE);
             }
          }
       });
@@ -65,9 +66,12 @@ public class MainWindow extends Listener implements Observer
    {
       profile = new Profile(controls);
       for (Control c : controls) {
-         c.addObserver(this);
          ControlView view = new ControlView(c);
-         view.fillPanel(controlPanel);
+         JPanel subPanel = new JPanel();
+
+         c.addObserver(this);
+         controlPanel.add(subPanel);
+         view.fillPanel(subPanel);
       }
    }
 
@@ -76,7 +80,7 @@ public class MainWindow extends Listener implements Observer
       MainWindow window = new MainWindow();
       JFrame frame = new JFrame("MainWindow");
       frame.setContentPane(window.panel1);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       frame.pack();
       frame.setVisible(true);
    }
@@ -128,7 +132,9 @@ public class MainWindow extends Listener implements Observer
    @Override
    public void update(Observable o, Object arg)
    {
-      Control control = (Control)o;
-      midiInterface.sendMessage(control.getMIDIAdress(), control.getValue());
+      try {
+         Control control = (Control)o;
+         midiInterface.sendMessage(control.getMIDIAdress(), control.getValue());
+      } catch (ClassCastException e) { /* Do nothing */ }
    }
 }

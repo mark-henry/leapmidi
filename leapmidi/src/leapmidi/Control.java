@@ -3,6 +3,7 @@ package leapmidi;
 import com.leapmotion.leap.Frame;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -15,23 +16,11 @@ public class Control extends Observable
    private String name;
    private int value;
 
-   public Control(MIDIAddress address, Transform transform)
+   public Control(MIDIAddress address, String name, Transform transform)
    {
-      this.transform = transform;
       this.address = address;
-   }
-
-   public Control(int CCChannel, int CCNumber, String name, Transform transform)
-   {
       this.transform = transform;
-      this.address = new MIDIAddress(CCChannel, CCNumber);
       this.name = name;
-   }
-
-   public Control(int CCChannel, int CCNumber, Transform transform)
-   {
-      this.transform = transform;
-      this.address = new MIDIAddress(CCChannel, CCNumber);
    }
 
    public void setValue(int newValue)

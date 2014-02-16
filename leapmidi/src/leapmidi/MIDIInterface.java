@@ -13,8 +13,7 @@ public class MIDIInterface
 
     public Object[] getAvailableMIDIDevices ()
     {
-        MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-        return infos;
+       return MidiSystem.getMidiDeviceInfo();
     }
     public void setMidiOutDevice(Object newDevice) throws MidiUnavailableException
     {

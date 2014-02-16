@@ -14,6 +14,7 @@ public class ControlView implements Observer, ChangeListener
    private JLabel nameLabel;
    private JSlider slider;
    private Control control;
+   private JButton showOptionsButton;
 
    public ControlView(Control control)
    {
@@ -22,6 +23,7 @@ public class ControlView implements Observer, ChangeListener
       slider = new JSlider(0, 127, 0);
       nameLabel = new JLabel(control.getName());
       slider.addChangeListener(this);
+      showOptionsButton = new JButton(">");
    }
 
    /**
@@ -57,5 +59,6 @@ public class ControlView implements Observer, ChangeListener
    {
       panel.add(nameLabel);
       panel.add(slider);
+      panel.add(showOptionsButton);
    }
 }
