@@ -8,7 +8,6 @@ import java.awt.event.*;
 import java.util.Observable;
 import java.util.Observer;
 import javax.sound.midi.*;
-import javax.swing.border.Border;
 
 import com.leapmotion.leap.Frame;
 
@@ -30,8 +29,9 @@ public class MainWindow extends Listener implements Observer
          private JScrollPane controlsScrollPane;
             private JPanel controlsPanel = new JPanel();
 
-   private Profile profile;
+   private Profile currentProfile;
    private MIDIInterface midiInterface = new MIDIInterface();
+   private Controller controller;
 
    private void createUIComponents()
    {
@@ -63,10 +63,10 @@ public class MainWindow extends Listener implements Observer
 
    public MainWindow()
    {
-      Controller controller = new Controller();
-      controller.addListener(this);
-
       initMainWindow();
+
+      this.controller = new Controller();
+      controller.addListener(this);
    }
 
    private void initMainWindow()
@@ -101,6 +101,7 @@ public class MainWindow extends Listener implements Observer
 
    private void loadProfile(Profile profile)
    {
+      this.currentProfile = profile;
       for (ControlView cv : profile.getControlViews()) {
          Control c = cv.getControl();
          cv.setOptionsPanel(optionsPanel);
@@ -126,7 +127,7 @@ public class MainWindow extends Listener implements Observer
    {
       Frame frame = controller.frame();
 
-      for (ControlView cv : profile.getControlViews()) {
+      for (ControlView cv : currentProfile.getControlViews()) {
          cv.getControl().acceptFrame(frame);
       }
    }

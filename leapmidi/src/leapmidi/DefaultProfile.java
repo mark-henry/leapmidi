@@ -1,9 +1,9 @@
 package leapmidi;
 
+import com.leapmotion.leap.FingerList;
 import com.leapmotion.leap.Frame;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,31 +24,56 @@ public class DefaultProfile
    {
       List<ControlView> views = new ArrayList<ControlView>();
 
-      final OptionView ymin = OptionViewFactory.makeSliderOption(100, 400, 100, "Min value");
-      final OptionView ymax = OptionViewFactory.makeSliderOption(100, 400, 400, "Max value");
-
-      Transform handYAxisTransform = new Transform()
-      {
-         @Override
-         public int getValue(Frame frame)
-         {
-            int min = ymin.getOption().getValue();
-            int max = ymax.getOption().getValue();
-            // Get y-coordinate of first finger we see
-            if (frame.fingers().isEmpty())
-               return -1;
-            else {
-               int pos = (int)frame.fingers().leftmost().tipPosition().getY();
-               return 127 * (pos - min) / (max - min);
+      views.add(ControlFactory.makeMinMaxTransform("Hand Y Axis", 10, 100, 400, 800,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.hands().rightmost().palmPosition().getY();
+               }
             }
-         }
-      };
-      Control handYAxisControl = new Control(new MIDIAddress(1, 1), "Hand Y Axis", handYAxisTransform);
-      ControlView handYAxisControlView = new ControlView(handYAxisControl);
-      handYAxisControlView.setOptionViews(new ArrayList<OptionView>(Arrays.asList(ymin, ymax)));
+      ));
 
-      views.add(handYAxisControlView);
+      views.add(ControlFactory.makeMinMaxTransform("Hand X Axis", -200, -100, 100, 200,
+            new ValueExtractor(){
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.hands().rightmost().palmPosition().getX();
+               }
+            }
+      ));
+
+      views.add(ControlFactory.makeMinMaxTransform("Hand Tilt - Pitch", -150, -50, 125, 150,
+            new ValueExtractor(){
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  float pitch = frame.hands().rightmost().direction().pitch();
+                  return (int)(100 * pitch);
+               }
+            }
+      ));
+
+      views.add(ControlFactory.makeMinMaxTransform("Hand Waggle", -300, -100, 100, 300,
+            new ValueExtractor(){
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  FingerList fingers = frame.hands().rightmost().fingers();
+                  float leftHeight = fingers.leftmost().tipPosition().getY();
+                  float rightHeight = fingers.rightmost().tipPosition().getY();
+                  return (int)(leftHeight - rightHeight);
+               }
+            }
+      ));
 
       return new Profile(views);
+   }
+
+   private static int valueFromFrame(Frame frame)
+   {
+      return (int)frame.fingers().leftmost().tipPosition().getY();
    }
 }

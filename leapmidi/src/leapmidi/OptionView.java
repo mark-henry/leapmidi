@@ -15,6 +15,7 @@ public abstract class OptionView
       this.option = option;
       this.name = name;
    }
+
    public abstract void fillPanel(JPanel panel);
 
    public String getName()

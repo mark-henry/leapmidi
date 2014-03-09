@@ -31,7 +31,7 @@ public class ControlView implements Observer, ChangeListener
       slider = new JSlider(0, 127, 0);
       nameLabel = new JLabel(control.getName());
       slider.addChangeListener(this);
-      showOptionsButton = new JButton(">");
+      showOptionsButton = new JButton("→");
       showOptionsButton.addActionListener(new ActionListener()
       {
          @Override
