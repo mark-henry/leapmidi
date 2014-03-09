@@ -8,10 +8,11 @@ public class SliderOptionView extends OptionView
 {
    private JLabel label;
    private JSlider slider;
-   private Option<Integer> option;
+   private Option option;
 
-   public SliderOptionView(Option<Integer> option)
+   public SliderOptionView(Option option)
    {
+      super(option);
       this.option = option;
       label = new JLabel("slideroptionview");
       slider = new JSlider(0,500);

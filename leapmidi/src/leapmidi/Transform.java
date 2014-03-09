@@ -15,10 +15,4 @@ public abstract class Transform
     * @return [0-127], or -1 if no data is available.
     */
    abstract public int getValue(Frame frame);
-
-   /**
-    * Implementers are to override this with the Transform's user-adjustable parameters.
-    * @return a list of Options for the user to adjust
-    */
-   abstract public List<Option> getOptions();
 }

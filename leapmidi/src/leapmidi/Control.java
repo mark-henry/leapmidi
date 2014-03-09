@@ -30,6 +30,7 @@ public class Control extends Observable
          setChanged();
          notifyObservers();
       }
+
    }
 
    public String getName()

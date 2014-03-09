@@ -5,24 +5,62 @@ import com.leapmotion.leap.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javax.sound.midi.*;
 import com.leapmotion.leap.Frame;
-import sun.awt.HorizBagLayout;
 
 /**
  * MainWindow
  */
 public class MainWindow extends Listener implements Observer
 {
-   private JPanel panel1;
-   private JComboBox comboBox1;
-   private JPanel controlPanel;
-   private JPanel optionPanel;
+   private JPanel windowPanel = new JPanel();
+      private JPanel optionsPanel = new JPanel();
+      private JPanel leftPanel = new JPanel();
+         private JPanel topPanel = new JPanel();
+            private JButton buttonLoadProfile = new JButton();
+            private JButton buttonSaveProfile = new JButton();
+            private JLabel midiComboBoxLabel = new JLabel();
+            private JComboBox midiComboBox = new JComboBox();
+         private JScrollPane controlsScrollPane = new JScrollPane();
+            private JPanel controlsPanel = new JPanel();
+
    private Profile profile;
    private MIDIInterface midiInterface = new MIDIInterface();
+
+   private void createUIComponents()
+   {
+      windowPanel.setLayout(new BorderLayout());
+      windowPanel.add(leftPanel, BorderLayout.WEST);
+      windowPanel.add(optionsPanel, BorderLayout.EAST);
+
+      optionsPanel.setMinimumSize(new Dimension(300, 0));
+      optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
+
+      leftPanel.setLayout(new BorderLayout());
+      leftPanel.add(topPanel, BorderLayout.NORTH);
+      leftPanel.add(controlsScrollPane, BorderLayout.CENTER);
+
+      topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+      buttonLoadProfile.setText(AppStrings.get("buttonLoadProfileText"));
+      buttonSaveProfile.setText(AppStrings.get("buttonSaveProfileText"));
+      midiComboBoxLabel.setText(AppStrings.get("midiComboBoxLabelText"));
+      topPanel.add(buttonLoadProfile);
+      topPanel.add(buttonSaveProfile);
+      topPanel.add(midiComboBoxLabel);
+      topPanel.add(midiComboBox);
+      midiComboBox.setMinimumSize(new Dimension(200, 0));
+
+      controlsScrollPane.add(controlsPanel);
+      controlsScrollPane.setMinimumSize(new Dimension(500, 500));
+      controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
+      controlsPanel.setAlignmentX(0);
+      controlsPanel.setMinimumSize(new Dimension(500, 500));
+      controlsPanel.add(new JButton("asdf"));
+
+      windowPanel.doLayout();
+   }
 
    public MainWindow()
    {
@@ -34,44 +72,43 @@ public class MainWindow extends Listener implements Observer
 
    private void initMainWindow()
    {
-      controlPanel.setLayout(new GridLayout(0,1));
+      createUIComponents();
       initMIDIDevices();
-      loadProfile(DefaultControls.getDefaultControls());
+      loadProfile(DefaultProfile.getDefaultControls());
    }
 
    private void initMIDIDevices()
    {
-      // Init comboBox1 with available MIDI devices
+      // Init midiComboBox with available MIDI devices
       DefaultComboBoxModel model = new DefaultComboBoxModel(midiInterface.getAvailableMIDIDevices());
-      comboBox1.setModel(model);
+      midiComboBox.setModel(model);
 
-      comboBox1.addActionListener(new ActionListener()
+      midiComboBox.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
             try
             {
-               midiInterface.setMidiOutDevice(comboBox1.getSelectedItem());
+               midiInterface.setMidiOutDevice(midiComboBox.getSelectedItem());
             }
             catch (MidiUnavailableException e1)
             {
-               JOptionPane.showMessageDialog(panel1, e1.getMessage(), "MIDI Unavailable", JOptionPane.ERROR_MESSAGE);
+               JOptionPane.showMessageDialog(windowPanel, e1.getMessage(), "MIDI Unavailable", JOptionPane.ERROR_MESSAGE);
             }
          }
       });
    }
 
-   private void loadProfile(List<Control> controls)
+   private void loadProfile(Profile profile)
    {
-      profile = new Profile(controls);
-      for (Control c : controls) {
-         ControlView view = new ControlView(c);
+      for (ControlView cv : profile.getControlViews()) {
+         Control c = cv.getControl();
+         cv.setOptionsPanel(optionsPanel);
          JPanel subPanel = new JPanel();
-
          c.addObserver(this);
-         controlPanel.add(subPanel);
-         view.fillPanel(subPanel);
+         controlsPanel.add(subPanel);
+         cv.fillPanel(subPanel);
       }
    }
 
@@ -79,7 +116,7 @@ public class MainWindow extends Listener implements Observer
    {
       MainWindow window = new MainWindow();
       JFrame frame = new JFrame("MainWindow");
-      frame.setContentPane(window.panel1);
+      frame.setContentPane(window.windowPanel);
       frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       frame.pack();
       frame.setVisible(true);
@@ -90,8 +127,8 @@ public class MainWindow extends Listener implements Observer
    {
       Frame frame = controller.frame();
 
-      for (Control c : profile.getControls()) {
-         c.acceptFrame(frame);
+      for (ControlView cv : profile.getControlViews()) {
+         cv.getControl().acceptFrame(frame);
       }
    }
 

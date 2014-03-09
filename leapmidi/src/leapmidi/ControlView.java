@@ -3,6 +3,10 @@ package leapmidi;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -15,6 +19,8 @@ public class ControlView implements Observer, ChangeListener
    private JSlider slider;
    private Control control;
    private JButton showOptionsButton;
+   private JPanel optionsPanel;
+   private List<OptionView> optionViews = new ArrayList<OptionView>();
 
    public ControlView(Control control)
    {
@@ -24,13 +30,28 @@ public class ControlView implements Observer, ChangeListener
       nameLabel = new JLabel(control.getName());
       slider.addChangeListener(this);
       showOptionsButton = new JButton(">");
+      showOptionsButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            fillOptionsPanel();
+         }
+      });
+   }
+
+   public void setOptionsPanel(JPanel optionsPanel)
+   {
+      this.optionsPanel = optionsPanel;
+   }
+
+   public void setOptionViews(List<OptionView> views)
+   {
+      this.optionViews = views;
    }
 
    /**
-    * This method is called whenever the observed object is changed. An
-    * application calls an <tt>Observable</tt> object's
-    * <code>notifyObservers</code> method to have all the object's
-    * observers notified of the change.
+    * Called whenever the Control changes state, for any reason
     *
     * @param o   the observable object.
     * @param arg an argument passed to the <code>notifyObservers</code>
@@ -38,21 +59,32 @@ public class ControlView implements Observer, ChangeListener
    @Override
    public void update(Observable o, Object arg)
    {
-      // Called when the Control changes state
       slider.setValue(control.getValue());
       nameLabel.setText(control.getName());
    }
 
    /**
-    * Invoked when the target of the listener has changed its state.
+    * Called only when slider is manually moved by the user.
     *
     * @param e a ChangeEvent object
     */
    @Override
    public void stateChanged(ChangeEvent e)
    {
-      // Called when slider is manually moved by user
       control.setValue(slider.getValue());
+   }
+
+   private void fillOptionsPanel()
+   {
+      optionsPanel.removeAll();
+      for (OptionView optionView : optionViews)
+      {
+         JPanel newPanel = new JPanel();
+         optionView.fillPanel(newPanel);
+         newPanel.add(new JButton("asdfbutton"));
+         optionsPanel.add(newPanel);
+      }
+      optionsPanel.validate();
    }
 
    public void fillPanel(JPanel panel)
@@ -60,5 +92,10 @@ public class ControlView implements Observer, ChangeListener
       panel.add(nameLabel);
       panel.add(slider);
       panel.add(showOptionsButton);
+   }
+
+   public Control getControl()
+   {
+      return control;
    }
 }

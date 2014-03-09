@@ -1,13 +1,15 @@
 package leapmidi;
 
-/**
- * Option
- */
-public class Option<T>
-{
-   private T value;
+import javax.swing.*;
 
-   public Option(T initialValue)
+/**
+ * An Option encapulates an integer
+ */
+public class Option
+{
+   private int value;
+
+   public Option(int initialValue)
    {
       this.value = initialValue;
    }
@@ -16,12 +18,12 @@ public class Option<T>
    {
    }
 
-   public T getValue()
+   public int getValue()
    {
       return value;
    }
 
-   public void setValue(T value)
+   public void setValue(int value)
    {
       this.value = value;
    }

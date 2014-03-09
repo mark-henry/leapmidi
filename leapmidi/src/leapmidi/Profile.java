@@ -5,30 +5,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A Profile aggregates Controls.
+ * A Profile aggregates ControlViews, each of which aggregates a Control and a list of OptionViews.
  */
 public class Profile implements Serializable
 {
-   private List<Control> controls = new ArrayList<Control>();
+   private List<ControlView> controlViews = new ArrayList<ControlView>();
 
-   public Profile(List<Control> controls)
+   public Profile(List<ControlView> controls)
    {
-      this.controls = controls;
+      this.controlViews = controls;
    }
 
-   /**
-    * Adds the given Control to this Profile
-    */
-   public void add(Control control)
+   public void add(ControlView control)
    {
-      controls.add(control);
+      controlViews.add(control);
    }
 
    private boolean areCCNumbersFree(int CCChannel, int CCNumber)
    {
-      for (Control c : controls)
+      for (ControlView controlView : controlViews)
       {
-         MIDIAddress addr = c.getMIDIAdress();
+         MIDIAddress addr = controlView.getControl().getMIDIAdress();
          if (addr.number == CCNumber && addr.channel == CCChannel)
             return false;
       }
@@ -36,8 +33,8 @@ public class Profile implements Serializable
       return true;
    }
 
-   public List<Control> getControls()
+   public List<ControlView> getControlViews()
    {
-      return controls;
+      return controlViews;
    }
 }
