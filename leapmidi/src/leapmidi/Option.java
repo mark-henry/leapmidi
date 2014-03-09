@@ -3,7 +3,7 @@ package leapmidi;
 import javax.swing.*;
 
 /**
- * An Option encapulates an integer
+ * An Option encapsulates an integer
  */
 public class Option
 {
@@ -12,10 +12,6 @@ public class Option
    public Option(int initialValue)
    {
       this.value = initialValue;
-   }
-
-   public Option()
-   {
    }
 
    public int getValue()

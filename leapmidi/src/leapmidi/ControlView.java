@@ -1,8 +1,10 @@
 package leapmidi;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -79,19 +81,20 @@ public class ControlView implements Observer, ChangeListener
       optionsPanel.removeAll();
       for (OptionView optionView : optionViews)
       {
-         JPanel newPanel = new JPanel();
-         optionView.fillPanel(newPanel);
-         newPanel.add(new JButton("asdfbutton"));
-         optionsPanel.add(newPanel);
+         JPanel subPanel = new JPanel();
+         optionView.fillPanel(subPanel);
+         optionsPanel.add(subPanel);
       }
       optionsPanel.validate();
    }
 
    public void fillPanel(JPanel panel)
    {
-      panel.add(nameLabel);
-      panel.add(slider);
-      panel.add(showOptionsButton);
+      panel.removeAll();
+      panel.setLayout(new BorderLayout(5, 5));
+      panel.add(nameLabel, BorderLayout.WEST);
+      panel.add(slider, BorderLayout.CENTER);
+      panel.add(showOptionsButton, BorderLayout.EAST);
    }
 
    public Control getControl()

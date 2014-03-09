@@ -24,8 +24,8 @@ public class DefaultProfile
    {
       List<ControlView> views = new ArrayList<ControlView>();
 
-      final OptionView ymin = OptionViewFactory.makeSliderOption(100, 400, 100);
-      final OptionView ymax = OptionViewFactory.makeSliderOption(100, 400, 400);
+      final OptionView ymin = OptionViewFactory.makeSliderOption(100, 400, 100, "Min value");
+      final OptionView ymax = OptionViewFactory.makeSliderOption(100, 400, 400, "Max value");
 
       Transform handYAxisTransform = new Transform()
       {

@@ -8,6 +8,8 @@ import java.awt.event.*;
 import java.util.Observable;
 import java.util.Observer;
 import javax.sound.midi.*;
+import javax.swing.border.Border;
+
 import com.leapmotion.leap.Frame;
 
 /**
@@ -16,14 +18,16 @@ import com.leapmotion.leap.Frame;
 public class MainWindow extends Listener implements Observer
 {
    private JPanel windowPanel = new JPanel();
+   private JSplitPane windowSplitPane;
+      private JScrollPane optionsScrollPane;
       private JPanel optionsPanel = new JPanel();
       private JPanel leftPanel = new JPanel();
          private JPanel topPanel = new JPanel();
-            private JButton buttonLoadProfile = new JButton();
-            private JButton buttonSaveProfile = new JButton();
-            private JLabel midiComboBoxLabel = new JLabel();
+            private JButton buttonLoadProfile = new JButton(AppStrings.get("buttonLoadProfileText"));
+            private JButton buttonSaveProfile = new JButton(AppStrings.get("buttonSaveProfileText"));
+            private JLabel midiComboBoxLabel = new JLabel(AppStrings.get("midiComboBoxLabelText"));
             private JComboBox midiComboBox = new JComboBox();
-         private JScrollPane controlsScrollPane = new JScrollPane();
+         private JScrollPane controlsScrollPane;
             private JPanel controlsPanel = new JPanel();
 
    private Profile profile;
@@ -31,35 +35,30 @@ public class MainWindow extends Listener implements Observer
 
    private void createUIComponents()
    {
-      windowPanel.setLayout(new BorderLayout());
-      windowPanel.add(leftPanel, BorderLayout.WEST);
-      windowPanel.add(optionsPanel, BorderLayout.EAST);
+      topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+      topPanel.add(buttonLoadProfile);
+      topPanel.add(Box.createRigidArea(new Dimension(2, 0)));
+      topPanel.add(buttonSaveProfile);
+      topPanel.add(Box.createRigidArea(new Dimension(7, 0)));
+      topPanel.add(midiComboBoxLabel);
+      topPanel.add(Box.createRigidArea(new Dimension(2, 0)));
+      topPanel.add(midiComboBox);
+      midiComboBox.setMinimumSize(new Dimension(100, 0));
 
-      optionsPanel.setMinimumSize(new Dimension(300, 0));
-      optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
+      controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.PAGE_AXIS));
+      controlsScrollPane = new JScrollPane(controlsPanel);
 
       leftPanel.setLayout(new BorderLayout());
       leftPanel.add(topPanel, BorderLayout.NORTH);
       leftPanel.add(controlsScrollPane, BorderLayout.CENTER);
 
-      topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-      buttonLoadProfile.setText(AppStrings.get("buttonLoadProfileText"));
-      buttonSaveProfile.setText(AppStrings.get("buttonSaveProfileText"));
-      midiComboBoxLabel.setText(AppStrings.get("midiComboBoxLabelText"));
-      topPanel.add(buttonLoadProfile);
-      topPanel.add(buttonSaveProfile);
-      topPanel.add(midiComboBoxLabel);
-      topPanel.add(midiComboBox);
-      midiComboBox.setMinimumSize(new Dimension(200, 0));
+      optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.PAGE_AXIS));
+      optionsScrollPane = new JScrollPane(optionsPanel);
+      optionsScrollPane.setPreferredSize(new Dimension(300, 0));
 
-      controlsScrollPane.add(controlsPanel);
-      controlsScrollPane.setMinimumSize(new Dimension(500, 500));
-      controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
-      controlsPanel.setAlignmentX(0);
-      controlsPanel.setMinimumSize(new Dimension(500, 500));
-      controlsPanel.add(new JButton("asdf"));
-
-      windowPanel.doLayout();
+      windowSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, optionsScrollPane);
+      windowPanel.setLayout(new BorderLayout());
+      windowPanel.add(windowSplitPane, BorderLayout.CENTER);
    }
 
    public MainWindow()
