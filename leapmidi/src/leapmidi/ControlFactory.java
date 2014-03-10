@@ -2,7 +2,6 @@ package leapmidi;
 
 import com.leapmotion.leap.Frame;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -10,13 +9,13 @@ import java.util.Arrays;
  */
 public class ControlFactory
 {
-   public static ControlView makeMinMaxTransform(String name, int min, int minInit, int maxInit, int max,
-                                                 final ValueExtractor valueExtractor)
+   public static ControlView makeMinMaxControl(String name, int min, int minInit, int maxInit, int max,
+                                               final ValueExtractor valueExtractor)
    {
       final OptionView minOptionView = OptionViewFactory.makeSliderOption(min, minInit, max, "Min");
       final OptionView maxOptionView = OptionViewFactory.makeSliderOption(min, maxInit, max, "Max");
 
-      Transform handYAxisTransform = new Transform()
+      Transform minMaxTransform = new Transform()
       {
          @Override
          public int getValue(Frame frame)
@@ -35,9 +34,9 @@ public class ControlFactory
             }
          }
       };
-      Control handYAxisControl = new Control(new MIDIAddress(1, 1), name, handYAxisTransform);
-      ControlView handYAxisControlView = new ControlView(handYAxisControl);
-      handYAxisControlView.setOptionViews(new ArrayList<OptionView>(Arrays.asList(minOptionView, maxOptionView)));
-      return handYAxisControlView;
+      Control minMaxControl = new Control(name, null, minMaxTransform);
+      ControlView minMaxControlView = new ControlView(minMaxControl);
+      minMaxControlView.setOptionViews(Arrays.asList(minOptionView, maxOptionView));
+      return minMaxControlView;
    }
 }

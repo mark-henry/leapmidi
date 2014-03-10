@@ -65,8 +65,8 @@ public class MainWindow extends Listener implements Observer
    {
       initMainWindow();
 
-      this.controller = new Controller();
-      controller.addListener(this);
+      this.controller = new Controller(this);
+      controller.setPolicyFlags(Controller.PolicyFlag.POLICY_BACKGROUND_FRAMES);
    }
 
    private void initMainWindow()
@@ -115,7 +115,7 @@ public class MainWindow extends Listener implements Observer
    public static void main(String[] args)
    {
       MainWindow window = new MainWindow();
-      JFrame frame = new JFrame("MainWindow");
+      JFrame frame = new JFrame(AppStrings.get("MainWindowTitle"));
       frame.setContentPane(window.windowPanel);
       frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       frame.pack();
@@ -142,7 +142,6 @@ public class MainWindow extends Listener implements Observer
    public void onConnect(Controller controller)
    {
       System.out.println("Controller Connnected");
-      controller.setPolicyFlags(Controller.PolicyFlag.POLICY_BACKGROUND_FRAMES);
    }
 
    @Override

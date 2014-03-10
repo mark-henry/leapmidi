@@ -24,7 +24,7 @@ public class DefaultProfile
    {
       List<ControlView> views = new ArrayList<ControlView>();
 
-      views.add(ControlFactory.makeMinMaxTransform("Hand Y Axis", 10, 100, 400, 800,
+      views.add(ControlFactory.makeMinMaxControl("Hand Y Axis", 10, 100, 400, 800,
             new ValueExtractor()
             {
                @Override
@@ -35,8 +35,9 @@ public class DefaultProfile
             }
       ));
 
-      views.add(ControlFactory.makeMinMaxTransform("Hand X Axis", -200, -100, 100, 200,
-            new ValueExtractor(){
+      views.add(ControlFactory.makeMinMaxControl("Hand X Axis", -200, -100, 100, 200,
+            new ValueExtractor()
+            {
                @Override
                public int valueFromFrame(Frame frame)
                {
@@ -45,29 +46,44 @@ public class DefaultProfile
             }
       ));
 
-      views.add(ControlFactory.makeMinMaxTransform("Hand Tilt - Pitch", -150, -50, 125, 150,
-            new ValueExtractor(){
+      views.add(ControlFactory.makeMinMaxControl("Hand Tilt - Pitch", -150, -50, 125, 150,
+            new ValueExtractor()
+            {
                @Override
                public int valueFromFrame(Frame frame)
                {
                   float pitch = frame.hands().rightmost().direction().pitch();
-                  return (int)(100 * pitch);
+                  return (int) (100 * pitch);
                }
             }
       ));
 
-      views.add(ControlFactory.makeMinMaxTransform("Hand Waggle", -300, -100, 100, 300,
-            new ValueExtractor(){
+      views.add(ControlFactory.makeMinMaxControl("Hand Waggle", -300, -100, 100, 300,
+            new ValueExtractor()
+            {
                @Override
                public int valueFromFrame(Frame frame)
                {
                   FingerList fingers = frame.hands().rightmost().fingers();
                   float leftHeight = fingers.leftmost().tipPosition().getY();
                   float rightHeight = fingers.rightmost().tipPosition().getY();
-                  return (int)(leftHeight - rightHeight);
+                  return (int) (leftHeight - rightHeight);
                }
             }
       ));
+
+      views.add(ControlFactory.makeMinMaxControl("Hand Radius", 0, 50, 100, 150,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  float radius = frame.hands().rightmost().sphereRadius();
+                  return (int) radius;
+               }
+            }
+      ));
+
 
       return new Profile(views);
    }

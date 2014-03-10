@@ -2,6 +2,7 @@ package leapmidi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -9,24 +10,38 @@ import java.util.List;
  */
 public class Profile implements Serializable
 {
-   private List<ControlView> controlViews = new ArrayList<ControlView>();
+   private List<ControlView> controlViews;
 
-   public Profile(List<ControlView> controls)
+   public Profile(Collection<ControlView> controlViews)
    {
-      this.controlViews = controls;
+      this.controlViews = new ArrayList<ControlView>();
+      for (ControlView controlView : controlViews) {
+         this.add(controlView);
+      }
    }
 
-   public void add(ControlView control)
+   public void add(ControlView controlView)
    {
-      controlViews.add(control);
+      MIDIAddress midiAddress = controlView.getControl().getMIDIAdress();
+
+      while (!midiAddressFree(midiAddress))
+         midiAddress.increment();
+
+      controlView.getControl().setAddress(midiAddress);
+      controlViews.add(controlView);
    }
 
-   private boolean areCCNumbersFree(int CCChannel, int CCNumber)
+   private boolean midiAddressFree(MIDIAddress midiAddress)
+   {
+      return midiAddressFree(midiAddress.channel, midiAddress.controller);
+   }
+
+   private boolean midiAddressFree(int CCChannel, int CCController)
    {
       for (ControlView controlView : controlViews)
       {
          MIDIAddress addr = controlView.getControl().getMIDIAdress();
-         if (addr.number == CCNumber && addr.channel == CCChannel)
+         if (addr.controller == CCController && addr.channel == CCChannel)
             return false;
       }
 

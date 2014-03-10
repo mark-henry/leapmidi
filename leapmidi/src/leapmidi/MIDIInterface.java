@@ -1,14 +1,13 @@
 package leapmidi;
 
 import javax.sound.midi.*;
-import javax.swing.*;
-import java.io.Console;
 
 /**
  * MIDIInterface
  */
 public class MIDIInterface
 {
+   public static final int MIDI_MAXVAL = 127;
    private MidiDevice midiOutDevice = null;
 
    public Object[] getAvailableMIDIDevices ()
@@ -31,8 +30,9 @@ public class MIDIInterface
       }
 
       try {
+         //System.out.println("MIDI (" + address.channel + ", " + address.controller + ") = " + value);
          midiOutDevice.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE,
-               address.channel, address.number, value), -1);
+               address.channel, address.controller, value), -1);
       }
       catch (InvalidMidiDataException e)
       {

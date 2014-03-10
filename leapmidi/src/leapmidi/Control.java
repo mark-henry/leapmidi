@@ -16,8 +16,11 @@ public class Control extends Observable
    private String name;
    private int value;
 
-   public Control(MIDIAddress address, String name, Transform transform)
+   public Control(String name, MIDIAddress address, Transform transform)
    {
+      if (address == null)
+         address = new MIDIAddress(1, 1);
+
       this.address = address;
       this.transform = transform;
       this.name = name;
@@ -25,12 +28,12 @@ public class Control extends Observable
 
    public void setValue(int newValue)
    {
+      newValue = Math.max(0, Math.min(newValue, MIDIInterface.MIDI_MAXVAL));
       if (this.value != newValue) {
          value = newValue;
          setChanged();
          notifyObservers();
       }
-
    }
 
    public String getName()
@@ -60,7 +63,8 @@ public class Control extends Observable
    public void acceptFrame(Frame frame)
    {
       int newValue = transform.getValue(frame);
-      this.setValue(newValue);
+      if (newValue != -1)
+         this.setValue(newValue);
    }
 
    public int getValue()
