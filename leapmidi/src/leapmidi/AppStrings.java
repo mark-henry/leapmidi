@@ -14,7 +14,7 @@ public class AppStrings
       strings.put("buttonSaveProfileText", "Save Profile...");
       strings.put("buttonLoadProfileText", "Load Profile...");
       strings.put("midiComboBoxLabelText", "MIDI Out Device:");
-      strings.put("MainWindowTitle", "LeapMIDI");
+      strings.put("MainWindowTitle", "Flapper");
    }
 
    public static String get(String key)
@@ -22,6 +22,6 @@ public class AppStrings
       if (strings.containsKey(key))
          return strings.get(key);
       else
-         return "'" + key + "' not found";
+         return "%" + key + "%";
    }
 }

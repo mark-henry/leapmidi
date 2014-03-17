@@ -82,6 +82,8 @@ public class ControlView implements Observer, ChangeListener
       for (OptionView optionView : optionViews)
       {
          JPanel subPanel = new JPanel();
+         subPanel.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
+
          optionView.fillPanel(subPanel);
          optionsPanel.add(subPanel);
       }

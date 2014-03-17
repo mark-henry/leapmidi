@@ -22,7 +22,7 @@ public class Profile implements Serializable
 
    public void add(ControlView controlView)
    {
-      MIDIAddress midiAddress = controlView.getControl().getMIDIAdress();
+      MIDIAddress midiAddress = controlView.getControl().getMIDIAddress();
 
       while (!midiAddressFree(midiAddress))
          midiAddress.increment();
@@ -40,7 +40,7 @@ public class Profile implements Serializable
    {
       for (ControlView controlView : controlViews)
       {
-         MIDIAddress addr = controlView.getControl().getMIDIAdress();
+         MIDIAddress addr = controlView.getControl().getMIDIAddress();
          if (addr.controller == CCController && addr.channel == CCChannel)
             return false;
       }

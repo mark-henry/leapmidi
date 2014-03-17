@@ -55,7 +55,7 @@ public class Control extends Observable
       this.address = address;
    }
 
-   public MIDIAddress getMIDIAdress()
+   public MIDIAddress getMIDIAddress()
    {
       return this.address;
    }

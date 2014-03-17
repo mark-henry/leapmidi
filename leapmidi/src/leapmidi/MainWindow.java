@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.util.Observable;
 import java.util.Observer;
 import javax.sound.midi.*;
+import javax.swing.border.Border;
 
 import com.leapmotion.leap.Frame;
 
@@ -36,10 +37,10 @@ public class MainWindow extends Listener implements Observer
    private void createUIComponents()
    {
       topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-      topPanel.add(buttonLoadProfile);
-      topPanel.add(Box.createRigidArea(new Dimension(2, 0)));
-      topPanel.add(buttonSaveProfile);
-      topPanel.add(Box.createRigidArea(new Dimension(7, 0)));
+      //topPanel.add(buttonLoadProfile);
+      //topPanel.add(Box.createRigidArea(new Dimension(2, 0)));
+      //topPanel.add(buttonSaveProfile);
+      //topPanel.add(Box.createRigidArea(new Dimension(7, 0)));
       topPanel.add(midiComboBoxLabel);
       topPanel.add(Box.createRigidArea(new Dimension(2, 0)));
       topPanel.add(midiComboBox);
@@ -48,7 +49,7 @@ public class MainWindow extends Listener implements Observer
       controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.PAGE_AXIS));
       controlsScrollPane = new JScrollPane(controlsPanel);
 
-      leftPanel.setLayout(new BorderLayout());
+      leftPanel.setLayout(new BorderLayout(5,5));
       leftPanel.add(topPanel, BorderLayout.NORTH);
       leftPanel.add(controlsScrollPane, BorderLayout.CENTER);
 
@@ -58,6 +59,7 @@ public class MainWindow extends Listener implements Observer
 
       windowSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, optionsScrollPane);
       windowPanel.setLayout(new BorderLayout());
+      windowPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
       windowPanel.add(windowSplitPane, BorderLayout.CENTER);
    }
 
@@ -104,12 +106,22 @@ public class MainWindow extends Listener implements Observer
       this.currentProfile = profile;
       for (ControlView cv : profile.getControlViews()) {
          Control c = cv.getControl();
-         cv.setOptionsPanel(optionsPanel);
-         JPanel subPanel = new JPanel();
          c.addObserver(this);
-         controlsPanel.add(subPanel);
-         cv.fillPanel(subPanel);
+
+         renderControlViewToControlsPane(cv);
       }
+   }
+
+   private void renderControlViewToControlsPane(ControlView cv)
+   {
+      cv.setOptionsPanel(optionsPanel);
+
+      JPanel subPanel = new JPanel();
+      subPanel.setBorder(BorderFactory.createEmptyBorder(2,4,2,4));
+      subPanel.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
+
+      controlsPanel.add(subPanel);
+      cv.fillPanel(subPanel);
    }
 
    public static void main(String[] args)
@@ -170,7 +182,7 @@ public class MainWindow extends Listener implements Observer
    {
       try {
          Control control = (Control)o;
-         midiInterface.sendMessage(control.getMIDIAdress(), control.getValue());
+         midiInterface.sendMessage(control.getMIDIAddress(), control.getValue());
       } catch (ClassCastException e) { /* Do nothing */ }
    }
 }

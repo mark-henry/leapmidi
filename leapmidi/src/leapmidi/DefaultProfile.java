@@ -24,18 +24,7 @@ public class DefaultProfile
    {
       List<ControlView> views = new ArrayList<ControlView>();
 
-      views.add(ControlFactory.makeMinMaxControl("Hand Y Axis", 10, 100, 400, 800,
-            new ValueExtractor()
-            {
-               @Override
-               public int valueFromFrame(Frame frame)
-               {
-                  return (int) frame.hands().rightmost().palmPosition().getY();
-               }
-            }
-      ));
-
-      views.add(ControlFactory.makeMinMaxControl("Hand X Axis", -200, -100, 100, 200,
+      views.add(ControlViewFactory.makeMinMaxControl("Hand X Axis", -200, -100, 100, 200,
             new ValueExtractor()
             {
                @Override
@@ -46,7 +35,29 @@ public class DefaultProfile
             }
       ));
 
-      views.add(ControlFactory.makeMinMaxControl("Hand Tilt - Pitch", -150, -50, 125, 150,
+      views.add(ControlViewFactory.makeMinMaxControl("Hand Y Axis", 10, 100, 400, 800,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.hands().rightmost().palmPosition().getY();
+               }
+            }
+      ));
+
+      views.add(ControlViewFactory.makeMinMaxControl("Hand Z Axis", -200, -100, 100, 200,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.hands().rightmost().palmPosition().getZ();
+               }
+            }
+      ));
+
+      views.add(ControlViewFactory.makeMinMaxControl("Hand Pitch", -150, -50, 125, 150,
             new ValueExtractor()
             {
                @Override
@@ -58,7 +69,7 @@ public class DefaultProfile
             }
       ));
 
-      views.add(ControlFactory.makeMinMaxControl("Hand Waggle", -300, -100, 100, 300,
+      views.add(ControlViewFactory.makeMinMaxControl("Hand Waggle", -300, -100, 100, 300,
             new ValueExtractor()
             {
                @Override
@@ -72,18 +83,82 @@ public class DefaultProfile
             }
       ));
 
-      views.add(ControlFactory.makeMinMaxControl("Hand Radius", 0, 50, 100, 150,
+      views.add(ControlViewFactory.makeMinMaxControl("Hand Radius", 0, 50, 100, 150,
             new ValueExtractor()
             {
                @Override
                public int valueFromFrame(Frame frame)
                {
-                  float radius = frame.hands().rightmost().sphereRadius();
-                  return (int) radius;
+                  return (int) frame.hands().rightmost().sphereRadius();
                }
             }
       ));
 
+      views.add(ControlViewFactory.makeMinMaxControl("Stabilized Fingertip X", -200, -100, 100, 200,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.pointables().frontmost().stabilizedTipPosition().getX();
+               }
+            }
+      ));
+
+      views.add(ControlViewFactory.makeMinMaxControl("Stabilized Fingertip Y", 10, 100, 400, 800,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.pointables().frontmost().stabilizedTipPosition().getY();
+               }
+            }
+      ));
+
+      views.add(ControlViewFactory.makeMinMaxControl("Stabilized Fingertip Z", -200, -100, 100, 200,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.pointables().frontmost().stabilizedTipPosition().getZ();
+               }
+            }
+      ));
+
+      views.add(ControlViewFactory.makeMinMaxControl("Fingertip X", -200, -100, 100, 200,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.pointables().frontmost().stabilizedTipPosition().getX();
+               }
+            }
+      ));
+
+      views.add(ControlViewFactory.makeMinMaxControl("Fingertip Y", 10, 100, 400, 800,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.pointables().frontmost().tipPosition().getY();
+               }
+            }
+      ));
+
+      views.add(ControlViewFactory.makeMinMaxControl("Fingertip Z", -200, -100, 100, 200,
+            new ValueExtractor()
+            {
+               @Override
+               public int valueFromFrame(Frame frame)
+               {
+                  return (int) frame.pointables().frontmost().tipPosition().getZ();
+               }
+            }
+      ));
 
       return new Profile(views);
    }
