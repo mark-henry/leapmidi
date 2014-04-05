@@ -66,7 +66,11 @@ public class MainWindow extends Listener implements Observer
    public MainWindow()
    {
       initMainWindow();
+      initController();
+   }
 
+   private void initController()
+   {
       this.controller = new Controller(this);
       controller.setPolicyFlags(Controller.PolicyFlag.POLICY_BACKGROUND_FRAMES);
    }
