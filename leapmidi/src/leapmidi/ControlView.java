@@ -15,7 +15,7 @@ import java.util.Observer;
 /**
  * ControlView
  */
-public class ControlView implements Observer, ChangeListener
+public class ControlView implements ControlObserver, ChangeListener
 {
    private JLabel nameLabel;
    private JSlider slider;
@@ -54,12 +54,9 @@ public class ControlView implements Observer, ChangeListener
 
    /**
     * Called whenever the Control changes state, for any reason
-    *
-    * @param o   the observable object.
-    * @param arg an argument passed to the <code>notifyObservers</code>
     */
    @Override
-   public void update(Observable o, Object arg)
+   public void onControlChange(Control control)
    {
       slider.setValue(control.getValue());
       nameLabel.setText(control.getName());

@@ -14,7 +14,7 @@ public class AppStrings
       strings.put("buttonSaveProfileText", "Save Profile...");
       strings.put("buttonLoadProfileText", "Load Profile...");
       strings.put("midiComboBoxLabelText", "MIDI Out Device:");
-      strings.put("MainWindowTitle", "Flapper");
+      strings.put("MainWindowTitle", "MIDIFlapper");
    }
 
    public static String get(String key)

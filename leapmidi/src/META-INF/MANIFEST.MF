@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: LeapJava.jar LeapJava.jar LeapJava.jar junit-4.10.jar
+Main-Class: leapmidi.MainWindow
+

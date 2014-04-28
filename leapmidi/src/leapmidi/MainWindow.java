@@ -15,7 +15,7 @@ import com.leapmotion.leap.Frame;
 /**
  * MainWindow
  */
-public class MainWindow extends Listener implements Observer
+public class MainWindow extends Listener implements ControlObserver
 {
    private JPanel windowPanel = new JPanel();
    private JSplitPane windowSplitPane;
@@ -172,21 +172,9 @@ public class MainWindow extends Listener implements Observer
       System.out.println("Controller Disconnected");
    }
 
-   /**
-    * This method is called whenever the observed object is changed. An
-    * application calls an <tt>Observable</tt> object's
-    * <code>notifyObservers</code> method to have all the object's
-    * observers notified of the change.
-    *
-    * @param o   the observable object.
-    * @param arg an argument passed to the <code>notifyObservers</code>
-    */
    @Override
-   public void update(Observable o, Object arg)
+   public void onControlChange(Control control)
    {
-      try {
-         Control control = (Control)o;
-         midiInterface.sendMessage(control.getMIDIAddress(), control.getValue());
-      } catch (ClassCastException e) { /* Do nothing */ }
+      midiInterface.sendMessage(control.getMIDIAddress(), control.getValue());
    }
 }
